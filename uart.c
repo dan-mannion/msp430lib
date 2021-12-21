@@ -1,4 +1,9 @@
 #include "uart.h"
+int getStrLen(char *str){
+	int len = 0;
+	for(len;*(str+len)!='\0';len++){;}
+	return len;
+}
 void uartPause(){
 	bis(UCA0CTL1, UCSWRST);
 }
@@ -39,7 +44,8 @@ void uartWriteChar(char c){
 
 	
 }
-void uartPrintln(char *str_p, int len){
+void uartPrintln(char *str_p){
+	int len = getStrLen(str_p);
 	int n = 0;
 	for(n;n<len;n++){
 		uartWriteChar(*(str_p+n));
