@@ -26,13 +26,24 @@ void uartInit(){
 	setPinFunction(PORT1, 2, 2);
 	uartStart();
 }
+int uartBusy(){
+ if(UCA0STAT && UCBUSY)
+	 return 1;
+ else
+	 return 0;
+}
+void uartWriteChar(char c){
+	if(!uartBusy()){
+		UCA0TXBUF = c;	
+	}
+
+	
+}
 void main(){
 	stopWatchdogTimer();	
 	uartInit();	
 	while(1){
-		//if(UCA0STAT && UCBUSY){
-			UCA0TXBUF = 'x';	
-		//}
+		uartWriteChar('X');
 	}
 	
 }

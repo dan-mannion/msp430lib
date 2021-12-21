@@ -8,4 +8,5 @@
 void uartPuase();
 void uartStart();
 void uartInit();
+void uartWriteChar(char c);
 #endif
