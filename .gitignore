@@ -1,0 +1,8 @@
+src/tmp
+src/tmp/*
+*/tmp/*
+*/*/tmp
+*~
+~*
+*.o
+*.hex
