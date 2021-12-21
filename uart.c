@@ -39,6 +39,13 @@ void uartWriteChar(char c){
 
 	
 }
+void uartPrintln(char *str_p, int len){
+	int n = 0;
+	for(n;n<len;n++){
+		uartWriteChar(*(str_p+n));
+	}	
+	uartWriteChar('\n');
+}
 void main(){
 	stopWatchdogTimer();	
 	uartInit();	
