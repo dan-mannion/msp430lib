@@ -27,8 +27,8 @@ void uartInit(){
 
 	UCA0MCTL = UCBRS0;//Sets modulation type to 0
 
-	//bis(P1SEL2, BIT2);	
-	setPinFunction(PORT1, 2, 2);
+	setPinFunction(PORT1, 1, 3);
+	setPinFunction(PORT1, 2, 3);
 	uartStart();
 }
 int uartBusy(){
@@ -38,11 +38,8 @@ int uartBusy(){
 	 return 0;
 }
 void uartWriteChar(char c){
-	if(!uartBusy()){
-		UCA0TXBUF = c;	
-	}
-
-	
+	while(uartBusy()){;}
+	UCA0TXBUF = c;	
 }
 void uartPrintln(char *str_p){
 	int len = getStrLen(str_p);
@@ -55,8 +52,10 @@ void uartPrintln(char *str_p){
 void main(){
 	stopWatchdogTimer();	
 	uartInit();	
+	char str[] = "hello world";
+	uartPrintln(&str[0]);
 	while(1){
-		uartWriteChar('X');
+		//uartWriteChar('X');
 	}
 	
 }
