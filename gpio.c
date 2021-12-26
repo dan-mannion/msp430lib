@@ -28,33 +28,33 @@ void setPinMode(int port, int pin, int state){
 void setPort1Function(int pin, int func){
 	switch(func){
 		case(0):
-			bic(P1SEL, pin);
-			bic(P1SEL2, pin);
+			bic(P1SEL, 1<<pin);
+			bic(P1SEL2, 1<<pin);
 			break;
 		case(1):
-			bis(P1SEL, pin);
-			bic(P1SEL2, pin);
+			bis(P1SEL, 1<<pin);
+			bic(P1SEL2, 1<<pin);
 			break;
 		case(2):
-			bic(P1SEL, pin);
-			bis(P1SEL2,pin);
+			bic(P1SEL, 1<<pin);
+			bis(P1SEL2, 1<<pin);
 			break;
 		case(3):
-			bis(P1SEL, pin);
-			bis(P1SEL2, pin);
+			bis(P1SEL, 1<<pin);
+			bis(P1SEL2, 1<<pin);
 			break;
 	}
 }
 void setPort2Function(int pin, int func){
 	if(func&&(1<<0))
-		bis(P1SEL,pin);
+		bis(P1SEL,1<< pin);
 	else
-		bic(P1SEL, pin);
+		bic(P1SEL, 1<<pin);
 
 	if(func&&(1<<1))
-		bis(P2SEL2,pin);
+		bis(P2SEL2,1<<pin);
 	else
-		bic(P2SEL2,pin);
+		bic(P2SEL2, 1<<pin);
 }
 void setPinFunction(int port, int pin, int func){
 	switch(port){
