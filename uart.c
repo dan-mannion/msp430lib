@@ -49,13 +49,4 @@ void uartPrintln(char *str_p){
 	}	
 	uartWriteChar('\n');
 }
-void main(){
-	stopWatchdogTimer();	
-	uartInit();	
-	char str[] = "hello world";
-	uartPrintln(&str[0]);
-	while(1){
-		//uartWriteChar('X');
-	}
-	
-}
+

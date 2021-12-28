@@ -5,8 +5,6 @@
 #include "gpio.h"
 #include "watchdog.h"
 
-void uartPuase();
-void uartStart();
 void uartInit();
 void uartPrintln(char *str_p);
 #endif
