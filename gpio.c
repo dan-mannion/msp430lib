@@ -19,11 +19,11 @@ void writeCharToPortOutput(int port, char value){
 void setPinMode(int port, int pin, int state){
 	volatile unsigned char *dir_ptr = (port==PORT1)?&P1DIR:&P2DIR;
 	if(state==OUTPUT){
-		bic(*dir_ptr, 1<<pin);
+		bis(*dir_ptr, 1<<pin);
 	}else{
 		volatile unsigned char *ren_ptr = (port==PORT1)?&P1REN:&P2REN;
 		volatile unsigned char *out_ptr = (port==PORT1)?&P1OUT:&P2OUT;
-		bis(*dir_ptr, 1<<pin);
+		bic(*dir_ptr, 1<<pin);
 		switch(state){
 			case(INPUT):
 				bic(*ren_ptr, 1<<pin);
