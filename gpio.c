@@ -1,5 +1,9 @@
 #include "gpio.h"
 #include <msp430.h>
+int readPin(int port, int pin){
+	volatile unsigned char *port_ptr = (port==PORT1)?&P1IN:&P2IN;
+	return *port_ptr&(1<<pin);//Mask pin and check if 1. 
+}
 void writePinOutput(int port, int pin, int state){
 	volatile unsigned char *port_ptr = (port==PORT1)?&P1OUT:&P2OUT;
 	if(state==HIGH)
