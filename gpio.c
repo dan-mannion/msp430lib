@@ -1,6 +1,13 @@
 #include "gpio.h"
 #include <msp430.h>
+void writePinOutput(int port, int pin, int state){
+	volatile unsigned char *port_ptr = (port==PORT1)?&P1OUT:&P2OUT;
+	if(state==HIGH)
+		bis(*port_ptr, 1<<pin);
+	else
+		bic(*port_ptr, 1<<pin);
 
+}
 void setPinMode(int port, int pin, int state){
 	switch(state){
 		case OUTPUT:
