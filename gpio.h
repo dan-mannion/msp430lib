@@ -4,6 +4,8 @@
 #include "macros.h"
 #define OUTPUT 0
 #define INPUT 1
+#define INPUT_PULLUP 2
+#define INPUT_PULLDOWN 3
 #define PORT1 1
 #define PORT2 2
 #define HIGH 1
