@@ -8,6 +8,10 @@ void writePinOutput(int port, int pin, int state){
 		bic(*port_ptr, 1<<pin);
 
 }
+void writeCharToPortOutput(int port, char value){
+	volatile unsigned char *port_ptr = (port==PORT1)?&P1OUT:&P2OUT;
+	*port_ptr = value; 
+}
 void setPinMode(int port, int pin, int state){
 	switch(state){
 		case OUTPUT:

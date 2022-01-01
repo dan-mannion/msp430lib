@@ -11,5 +11,5 @@
 void setPinMode(int port, int pin, int state); 
 void setPinFunction(int port, int pin, int func);
 void writePinOutput(int port, int pin, int state);
-//void writePortOutput(int port, char value);
+void writeCharToPortOutput(int port, char value);
 #endif
