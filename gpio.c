@@ -1,5 +1,21 @@
 #include "gpio.h"
 #include <msp430.h>
+void selectPinFunction(int port, int pin, int function){
+	volatile unsigned char *port_sel = (port==PORT1)?&P1SEL:&P2SEL;
+	volatile unsigned char *port_sel2 = (port==PORT1)?&P2SEL2:&P2SEL2;
+	
+	switch(function){
+		case(SEL_IO):
+			bic(*port_sel, 1<<pin);
+			bic(*port_sel2, 1<<pin);
+			break;
+		case(SEL_UART):
+			bis(*port_sel, 1<<pin);
+			bis(*port_sel2, 1<<pin);
+			break;
+	}
+	
+}
 int readPin(int port, int pin){
 	volatile unsigned char *port_ptr = (port==PORT1)?&P1IN:&P2IN;
 	return *port_ptr&(1<<pin);//Mask pin and check if 1. 
