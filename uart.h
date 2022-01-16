@@ -7,4 +7,7 @@
 
 void uartInit();
 void uartPrintln(char *str_p);
+int uartCharReceived();
+char uartReadChar();
+void uartWriteChar(char c);
 #endif

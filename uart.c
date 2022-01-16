@@ -32,7 +32,7 @@ void uartInit(){
 	uartStart();
 }
 int uartBusy(){
- if(UCA0STAT && UCBUSY)
+ if(UCA0STAT & UCBUSY)
 	 return 1;
  else
 	 return 0;
@@ -48,5 +48,14 @@ void uartPrintln(char *str_p){
 		uartWriteChar(*(str_p+n));
 	}	
 	uartWriteChar('\n');
+}
+int uartCharReceived(){
+	if(IFG2&UCA0RXIFG)
+		return 1;
+	else
+		return 0;
+}
+char uartReadChar(){
+	return UCA0RXBUF;
 }
 
