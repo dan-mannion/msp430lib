@@ -101,17 +101,26 @@ void setPort1Function(int pin, int func){
 	}
 }
 void setPort2Function(int pin, int func){
-	if(func&&(1<<0))
-		bis(P1SEL,1<< pin);
-	else
-		bic(P1SEL, 1<<pin);
-
-	if(func&&(1<<1))
-		bis(P2SEL2,1<<pin);
-	else
-		bic(P2SEL2, 1<<pin);
+	switch(func){
+		case(0):
+			bic(P2SEL, 1<<pin);
+			bic(P2SEL2, 1<<pin);
+			break;
+		case(1):
+			bis(P2SEL, 1<<pin);
+			bic(P2SEL2, 1<<pin);
+			break;
+		case(2):
+			bic(P2SEL, 1<<pin);
+			bis(P2SEL2, 1<<pin);
+			break;
+		case(3):
+			bis(P2SEL, 1<<pin);
+			bis(P2SEL2, 1<<pin);
+			break;
+	}
 }
-void setPinFunction(int port, int pin, int func){
+/*void setPinFunction(int port, int pin, int func){
 	switch(port){
 		case(1):
 			setPort1Function(pin, func);
@@ -120,5 +129,27 @@ void setPinFunction(int port, int pin, int func){
 			setPort2Function(pin, func);
 			break;
 	}	
+}*/
+void setPinFunction(int port, int pin, int func){
+	volatile unsigned char *sel_ptr = (port==PORT1)?&P1SEL:&P2SEL;
+	volatile unsigned char *sel2_ptr = (port==PORT1)?&P1SEL2:&P2SEL2;
+	switch(func){
+		case(0):
+			bic(*sel_ptr, 1<<pin);
+			bic(*sel2_ptr, 1<<pin);
+			break;
+		case(1):
+			bis(*sel_ptr, 1<<pin);
+			bic(*sel2_ptr, 1<<pin);
+			break;
+		case(2):
+			bic(*sel_ptr, 1<<pin);
+			bis(*sel2_ptr, 1<<pin);
+			break;
+		case(3):
+			bis(*sel_ptr, 1<<pin);
+			bis(*sel2_ptr, 1<<pin);
+			break;
+	}
 }
 
