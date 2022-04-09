@@ -2,7 +2,7 @@
 #include <msp430.h>
 void selectPinFunction(int port, int pin, int function){
 	volatile unsigned char *port_sel = (port==PORT1)?&P1SEL:&P2SEL;
-	volatile unsigned char *port_sel2 = (port==PORT1)?&P2SEL2:&P2SEL2;
+	volatile unsigned char *port_sel2 = (port==PORT1)?&P1SEL2:&P2SEL2;
 	
 	switch(function){
 		case(SEL_IO):
