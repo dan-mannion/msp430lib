@@ -3,5 +3,6 @@
 #include "system.h"
 #include "watchdog.h"
 #include "gpio.h"
+#include "timer.h"
 #endif
 
