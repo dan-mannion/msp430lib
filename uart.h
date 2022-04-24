@@ -10,4 +10,5 @@ void uartPrintln(char *str_p);
 int uartCharReceived();
 char uartReadChar();
 void uartWriteChar(char c);
+void uartEnterTXOnlyMode();
 #endif

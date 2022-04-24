@@ -58,4 +58,6 @@ int uartCharReceived(){
 char uartReadChar(){
 	return UCA0RXBUF;
 }
-
+void uartEnterTXOnlyMode(){
+	setPinFunction(PORT1, 1, SEL_IO);
+}
