@@ -21,7 +21,7 @@ struct LiquidCrystal{
   uint8_t _rs_pin; // LOW: command. HIGH: character.
   uint8_t _rw_pin; // LOW: write to LCD. HIGH: read from LCD.
   uint8_t _enable_pin; // activated by a HIGH pulse.
-  uint8_t _data_pins[8];
+  uint8_t _data_pins[4];
 
   uint8_t _displayfunction;
   uint8_t _displaycontrol;
@@ -53,37 +53,25 @@ struct LiquidCrystal{
 // LiquidCrystal constructor is called).
 
 
-LiquidCrystal::LiquidCrystal(uint8_t rs, uint8_t rw, uint8_t enable,
-			     uint8_t d0, uint8_t d1, uint8_t d2, uint8_t d3)
-{
-  init(1, rs, rw, enable, d0, d1, d2, d3, 0, 0, 0, 0);
-}
+struct LiquidCrystal liquidCrystalInit(uint8_t rs, uint8_t rw, uint8_t enable,
+			     uint8_t d0, uint8_t d1, uint8_t d2, uint8_t d3){
 
-
-
-void LiquidCrystal::init(uint8_t fourbitmode, uint8_t rs, uint8_t rw, uint8_t enable,
-			 uint8_t d0, uint8_t d1, uint8_t d2, uint8_t d3,
-			 uint8_t d4, uint8_t d5, uint8_t d6, uint8_t d7)
-{
-  _rs_pin = rs;
-  _rw_pin = rw;
-  _enable_pin = enable;
+  struct LiquidCrystal lcd = LiquidCrystal;
+  lcd._rs_pin = rs;
+  lcd._rw_pin = rw;
+  lcd._enable_pin = enable;
   
-  _data_pins[0] = d0;
-  _data_pins[1] = d1;
-  _data_pins[2] = d2;
-  _data_pins[3] = d3; 
-  _data_pins[4] = d4;
-  _data_pins[5] = d5;
-  _data_pins[6] = d6;
-  _data_pins[7] = d7; 
+  lcd._data_pins[0] = d0;
+  lcd._data_pins[1] = d1;
+  lcd._data_pins[2] = d2;
+  lcd._data_pins[3] = d3; 
 
-  if (fourbitmode)
-    _displayfunction = LCD_4BITMODE | LCD_1LINE | LCD_5x8DOTS;
-  else 
-    _displayfunction = LCD_8BITMODE | LCD_1LINE | LCD_5x8DOTS;
-  
+  //Settings TODO: check these are correct for teh 
+  lcd._displayfunction = LCD_4BITMODE | LCD_1LINE | LCD_5x8DOTS;
+
   begin(16, 1);  
+
+  return lcd;
 }
 
 void LiquidCrystal::begin(uint8_t cols, uint8_t lines, uint8_t dotsize) {
