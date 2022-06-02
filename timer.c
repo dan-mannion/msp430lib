@@ -52,9 +52,26 @@ void timerInit(){
 	//Set output mode for compare unit
 	//bis(TACCTL0, OUTMOD0);
 }
+void timerInitMicrosecond(){
+	stopTimer();
+	resetTimer();
+	resetFlag();
+	//select clock source
+	bic(TACTL, TASSEL0);
+	bis(TACTL, TASSEL1);
+	//select clock div
+	bic(TACTL, ID0);
+	bic(TACTL, ID1);
+
+}
 void timerStartMillisecond(int duration){
 	timerInit();
 	setAlarmValue(duration*125);	//when smclk is at 1meghz and div set to 8 then 125 counts=1millisecond	
+	startTimer();
+}
+void timerStartMicrosecond(int duration){
+	timerInitMicrosecond();
+	setAlarmValue(duration);	//when smclk is at 1meghz and div set to 8 then 125 counts=1millisecond	
 	startTimer();
 }
 int timerIsFinished(){
@@ -64,4 +81,12 @@ int timerIsFinished(){
 	}else{
 		return 0;
 	}
+}
+void delayMillisecond(int duration){
+	timerStartMillisecond(duration);
+	while(!timerIsFinished()){;}
+}
+void delayMicrosecond(int duration){
+	timerStartMicrosecond(duration);
+	while(!timerIsFinished()){;}
 }
