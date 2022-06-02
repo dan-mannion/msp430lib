@@ -69,7 +69,7 @@ struct LiquidCrystal liquidCrystalInit(uint8_t rs, uint8_t rw, uint8_t enable,
   //Settings TODO: check these are correct for teh 
   lcd._displayfunction = LCD_4BITMODE | LCD_1LINE | LCD_5x8DOTS;
 
-  begin(16, 1);  
+  begin(&lcd, 16, 1);  
 
   return lcd;
 }
@@ -80,7 +80,7 @@ void begin(struct LiquidCrystal *lcd, uint8_t cols, uint8_t lines, uint8_t dotsi
   }
   lcd->_numlines = lines;
 
-  setRowOffsets(0x00, 0x40, 0x00 + cols, 0x40 + cols);  
+  setRowOffsets(lcd,0x00, 0x40, 0x00 + cols, 0x40 + cols);  
 
   // for some 1 line displays you can select a 10 pixel high font
   if ((dotsize != LCD_5x8DOTS) && (lines == 1)) {
@@ -117,49 +117,49 @@ void begin(struct LiquidCrystal *lcd, uint8_t cols, uint8_t lines, uint8_t dotsi
     // figure 24, pg 46
 
     // we start in 8bit mode, try to set 4 bit mode
-    write4bits(0x03);
+    write4bits(lcd, 0x03);
     delayMicroseconds(4500); // wait min 4.1ms
 
     // second try
-    write4bits(0x03);
+    write4bits(lcd, 0x03);
     delayMicroseconds(4500); // wait min 4.1ms
     
     // third go!
-    write4bits(0x03); 
+    write4bits(lcd, 0x03); 
     delayMicroseconds(150);
 
     // finally, set to 4-bit interface
-    write4bits(0x02); 
+    write4bits(lcd, 0x02); 
   } else {
     // this is according to the Hitachi HD44780 datasheet
     // page 45 figure 23
 
     // Send function set command sequence
-    command(LCD_FUNCTIONSET | lcd->_displayfunction);
+    command(lcd, LCD_FUNCTIONSET | lcd->_displayfunction);
     delayMicroseconds(4500);  // wait more than 4.1 ms
 
     // second try
-    command(LCD_FUNCTIONSET | lcd->_displayfunction);
+    command(lcd, LCD_FUNCTIONSET | lcd->_displayfunction);
     delayMicroseconds(150);
 
     // third go
-    command(LCD_FUNCTIONSET | lcd->_displayfunction);
+    command(lcd, LCD_FUNCTIONSET | lcd->_displayfunction);
   }
 
   // finally, set # lines, font size, etc.
-  command(LCD_FUNCTIONSET | lcd->_displayfunction);  
+  command(lcd, LCD_FUNCTIONSET | lcd->_displayfunction);  
 
   // turn the display on with no cursor or blinking default
   lcd->_displaycontrol = LCD_DISPLAYON | LCD_CURSOROFF | LCD_BLINKOFF;  
-  display();
+  display(lcd);
 
   // clear it off
-  clear();
+  clear(lcd);
 
   // Initialize to default text direction (for romance languages)
   lcd->_displaymode = LCD_ENTRYLEFT | LCD_ENTRYSHIFTDECREMENT;
   // set the entry mode
-  command(LCD_ENTRYMODESET | lcd->_displaymode);
+  command(lcd, LCD_ENTRYMODESET | lcd->_displaymode);
 
 }
 
@@ -174,109 +174,109 @@ void setRowOffsets(struct LiquidCrystal *lcd, int row0, int row1, int row2, int 
 /********** high level commands, for the user! */
 void clear(struct LiquidCrystal *lcd)
 {
-  command(LCD_CLEARDISPLAY);  // clear display, set cursor position to zero
+  command(lcd, LCD_CLEARDISPLAY);  // clear display, set cursor position to zero
   delayMicroseconds(2000);  // this command takes a long time!
 }
 
 void home(struct LiquidCrystal *lcd)
 {
-  command(LCD_RETURNHOME);  // set cursor position to zero
+  command(lcd, LCD_RETURNHOME);  // set cursor position to zero
   delayMicroseconds(2000);  // this command takes a long time!
 }
 
 void setCursor(struct LiquidCrystal *lcd, uint8_t col, uint8_t row)
 {
-  const size_t max_lines = sizeof(_row_offsets) / sizeof(*_row_offsets);
+  const size_t max_lines = sizeof(lcd->_row_offsets) / sizeof(*(lcd->_row_offsets));
   if ( row >= max_lines ) {
     row = max_lines - 1;    // we count rows starting w/ 0
   }
-  if ( row >= _numlines ) {
-    row = _numlines - 1;    // we count rows starting w/ 0
+  if ( row >= lcd->_numlines ) {
+    row = lcd->_numlines - 1;    // we count rows starting w/ 0
   }
   
-  command(LCD_SETDDRAMADDR | (col + _row_offsets[row]));
+  command(lcd, LCD_SETDDRAMADDR | (col + lcd->_row_offsets[row]));
 }
 
 // Turn the display on/off (quickly)
 void noDisplay(struct LiquidCrystal *lcd) {
-  _displaycontrol &= ~LCD_DISPLAYON;
-  command(LCD_DISPLAYCONTROL | _displaycontrol);
+  lcd->_displaycontrol &= ~LCD_DISPLAYON;
+  command(lcd, LCD_DISPLAYCONTROL | lcd->_displaycontrol);
 }
 void display(struct LiquidCrystal *lcd) {
-  _displaycontrol |= LCD_DISPLAYON;
-  command(LCD_DISPLAYCONTROL | _displaycontrol);
+  lcd->_displaycontrol |= LCD_DISPLAYON;
+  command(lcd, LCD_DISPLAYCONTROL | lcd->_displaycontrol);
 }
 
 // Turns the underline cursor on/off
 void noCursor(struct LiquidCrystal *lcd) {
-  _displaycontrol &= ~LCD_CURSORON;
-  command(LCD_DISPLAYCONTROL | _displaycontrol);
+  lcd->_displaycontrol &= ~LCD_CURSORON;
+  command(lcd, LCD_DISPLAYCONTROL | lcd->_displaycontrol);
 }
 void cursor(struct LiquidCrystal *lcd) {
-  _displaycontrol |= LCD_CURSORON;
-  command(LCD_DISPLAYCONTROL | _displaycontrol);
+  lcd->_displaycontrol |= LCD_CURSORON;
+  command(lcd, LCD_DISPLAYCONTROL | lcd->_displaycontrol);
 }
 
 // Turn on and off the blinking cursor
 void noBlink(struct LiquidCrystal *lcd) {
-  _displaycontrol &= ~LCD_BLINKON;
-  command(LCD_DISPLAYCONTROL | _displaycontrol);
+  lcd->_displaycontrol &= ~LCD_BLINKON;
+  command(lcd, LCD_DISPLAYCONTROL | lcd->_displaycontrol);
 }
 void blink(struct LiquidCrystal *lcd) {
-  _displaycontrol |= LCD_BLINKON;
-  command(LCD_DISPLAYCONTROL | _displaycontrol);
+  lcd->_displaycontrol |= LCD_BLINKON;
+  command(lcd, LCD_DISPLAYCONTROL | lcd->_displaycontrol);
 }
 
 // These commands scroll the display without changing the RAM
 void scrollDisplayLeft(struct LiquidCrystal *lcd) {
-  command(LCD_CURSORSHIFT | LCD_DISPLAYMOVE | LCD_MOVELEFT);
+  command(lcd, LCD_CURSORSHIFT | LCD_DISPLAYMOVE | LCD_MOVELEFT);
 }
 void scrollDisplayRight(struct LiquidCrystal *lcd) {
-  command(LCD_CURSORSHIFT | LCD_DISPLAYMOVE | LCD_MOVERIGHT);
+  command(lcd, LCD_CURSORSHIFT | LCD_DISPLAYMOVE | LCD_MOVERIGHT);
 }
 
 // This is for text that flows Left to Right
 void leftToRight(struct LiquidCrystal *lcd) {
-  _displaymode |= LCD_ENTRYLEFT;
-  command(LCD_ENTRYMODESET | _displaymode);
+  lcd->_displaymode |= LCD_ENTRYLEFT;
+  command(lcd, LCD_ENTRYMODESET | lcd->_displaymode);
 }
 
 // This is for text that flows Right to Left
 void rightToLeft(struct LiquidCrystal *lcd) {
-  _displaymode &= ~LCD_ENTRYLEFT;
-  command(LCD_ENTRYMODESET | _displaymode);
+  lcd->_displaymode &= ~LCD_ENTRYLEFT;
+  command(lcd, LCD_ENTRYMODESET | lcd->_displaymode);
 }
 
 // This will 'right justify' text from the cursor
 void autoscroll(struct LiquidCrystal *lcd) {
-  _displaymode |= LCD_ENTRYSHIFTINCREMENT;
-  command(LCD_ENTRYMODESET | _displaymode);
+  lcd->_displaymode |= LCD_ENTRYSHIFTINCREMENT;
+  command(lcd, LCD_ENTRYMODESET | lcd->_displaymode);
 }
 
 // This will 'left justify' text from the cursor
 void noAutoscroll(struct LiquidCrystal *lcd) {
-  _displaymode &= ~LCD_ENTRYSHIFTINCREMENT;
-  command(LCD_ENTRYMODESET | _displaymode);
+  lcd->_displaymode &= ~LCD_ENTRYSHIFTINCREMENT;
+  command(lcd, LCD_ENTRYMODESET | lcd->_displaymode);
 }
 
 // Allows us to fill the first 8 CGRAM locations
 // with custom characters
 void createChar(struct LiquidCrystal *lcd, uint8_t location, uint8_t charmap[]) {
   location &= 0x7; // we only have 8 locations 0-7
-  command(LCD_SETCGRAMADDR | (location << 3));
+  command(lcd, LCD_SETCGRAMADDR | (location << 3));
   for (int i=0; i<8; i++) {
-    write(charmap[i]);
+    write(lcd, charmap[i]);
   }
 }
 
 /*********** mid level commands, for sending data/cmds */
 
 void command(struct LiquidCrystal *lcd, uint8_t value) {
-  send(value, LOW);
+  send(lcd, value, LOW);
 }
 
 size_t write(struct LiquidCrystal *lcd, uint8_t value) {
-  send(value, HIGH);
+  send(lcd, value, HIGH);
   return 1; // assume success
 }
 
@@ -284,35 +284,31 @@ size_t write(struct LiquidCrystal *lcd, uint8_t value) {
 
 // write either command or data, with automatic 4/8-bit selection
 void send(struct LiquidCrystal *lcd, uint8_t value, uint8_t mode) {
-  digitalWrite(_rs_pin, mode);
+  digitalWrite(lcd->_rs_pin, mode);
 
   // if there is a RW pin indicated, set it low to Write
-  if (_rw_pin != 255) { 
-    digitalWrite(_rw_pin, LOW);
-  }
+  if (lcd->_rw_pin != 255) { 
+    digitalWrite(lcd->_rw_pin, LOW);
+  } 
   
-  if (_displayfunction & LCD_8BITMODE) {
-    write8bits(value); 
-  } else {
-    write4bits(value>>4);
-    write4bits(value);
-  }
+  write4bits(lcd, value>>4);
+  write4bits(lcd, value);
 }
 
 void pulseEnable(struct LiquidCrystal *lcd) {
-  digitalWrite(_enable_pin, LOW);
+  digitalWrite(lcd->_enable_pin, LOW);
   delayMicroseconds(1);    
-  digitalWrite(_enable_pin, HIGH);
+  digitalWrite(lcd->_enable_pin, HIGH);
   delayMicroseconds(1);    // enable pulse must be >450 ns
-  digitalWrite(_enable_pin, LOW);
+  digitalWrite(lcd->_enable_pin, LOW);
   delayMicroseconds(100);   // commands need >37 us to settle
 }
 
 void write4bits(struct LiquidCrystal *lcd, uint8_t value) {
   for (int i = 0; i < 4; i++) {
-    digitalWrite(_data_pins[i], (value >> i) & 0x01);
+    digitalWrite(lcd->_data_pins[i], (value >> i) & 0x01);
   }
 
-  pulseEnable();
+  pulseEnable(lcd);
 }
 
