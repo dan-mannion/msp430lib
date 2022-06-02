@@ -5,6 +5,7 @@
 #include <inttypes.h>
 //#include "Arduino.h"
 #include "gpio.h"
+#include "timer.h"
 //DM remove arduino.h and add required includes: gpio, timers. 
 struct LiquidCrystal{
   uint8_t _pin_port;
@@ -106,7 +107,7 @@ void begin(struct LiquidCrystal *lcd, uint8_t cols, uint8_t lines, uint8_t dotsi
   // SEE PAGE 45/46 FOR INITIALIZATION SPECIFICATION!
   // according to datasheet, we need at least 40 ms after power rises above 2.7 V
   // before sending commands. Arduino can turn on way before 4.5 V so we'll wait 50
-  delayMicroseconds(50000); 
+  delayMicrosecond(50000); 
   // Now we pull both RS and R/W low to begin commands
   writePinOutput(lcd->_pin_port, lcd->_rs_pin, LOW);
   writePinOutput(lcd->_pin_port, lcd->_enable_pin, LOW);
@@ -121,15 +122,15 @@ void begin(struct LiquidCrystal *lcd, uint8_t cols, uint8_t lines, uint8_t dotsi
 
     // we start in 8bit mode, try to set 4 bit mode
     write4bits(lcd, 0x03);
-    delayMicroseconds(4500); // wait min 4.1ms
+    delayMicrosecond(4500); // wait min 4.1ms
 
     // second try
     write4bits(lcd, 0x03);
-    delayMicroseconds(4500); // wait min 4.1ms
+    delayMicrosecond(4500); // wait min 4.1ms
     
     // third go!
     write4bits(lcd, 0x03); 
-    delayMicroseconds(150);
+    delayMicrosecond(150);
 
     // finally, set to 4-bit interface
     write4bits(lcd, 0x02); 
@@ -139,11 +140,11 @@ void begin(struct LiquidCrystal *lcd, uint8_t cols, uint8_t lines, uint8_t dotsi
 
     // Send function set command sequence
     command(lcd, LCD_FUNCTIONSET | lcd->_displayfunction);
-    delayMicroseconds(4500);  // wait more than 4.1 ms
+    delayMicrosecond(4500);  // wait more than 4.1 ms
 
     // second try
     command(lcd, LCD_FUNCTIONSET | lcd->_displayfunction);
-    delayMicroseconds(150);
+    delayMicrosecond(150);
 
     // third go
     command(lcd, LCD_FUNCTIONSET | lcd->_displayfunction);
@@ -178,13 +179,13 @@ void setRowOffsets(struct LiquidCrystal *lcd, int row0, int row1, int row2, int 
 void clear(struct LiquidCrystal *lcd)
 {
   command(lcd, LCD_CLEARDISPLAY);  // clear display, set cursor position to zero
-  delayMicroseconds(2000);  // this command takes a long time!
+  delayMicrosecond(2000);  // this command takes a long time!
 }
 
 void home(struct LiquidCrystal *lcd)
 {
   command(lcd, LCD_RETURNHOME);  // set cursor position to zero
-  delayMicroseconds(2000);  // this command takes a long time!
+  delayMicrosecond(2000);  // this command takes a long time!
 }
 
 void setCursor(struct LiquidCrystal *lcd, uint8_t col, uint8_t row)
@@ -300,11 +301,11 @@ void send(struct LiquidCrystal *lcd, uint8_t value, uint8_t mode) {
 
 void pulseEnable(struct LiquidCrystal *lcd) {
   writePinOutput(lcd->_pin_port, lcd->_enable_pin, LOW);
-  delayMicroseconds(1);    
+  delayMicrosecond(1);    
   writePinOutput(lcd->_pin_port, lcd->_enable_pin, HIGH);
-  delayMicroseconds(1);    // enable pulse must be >450 ns
+  delayMicrosecond(1);    // enable pulse must be >450 ns
   writePinOutput(lcd->_pin_port, lcd->_enable_pin, LOW);
-  delayMicroseconds(100);   // commands need >37 us to settle
+  delayMicrosecond(100);   // commands need >37 us to settle
 }
 
 void write4bits(struct LiquidCrystal *lcd, uint8_t value) {
