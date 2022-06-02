@@ -4,6 +4,7 @@
 #include <string.h>
 #include <inttypes.h>
 #include "Arduino.h"
+//DM remove arduino.h and add required includes: gpio, timers. 
 
   void setRowOffsets(int row1, int row2, int row3, int row4);
   void createChar(uint8_t, uint8_t[]);
@@ -16,6 +17,7 @@
   void write8bits(uint8_t);
   void pulseEnable();
 
+struct LiquidCrystal{
   uint8_t _rs_pin; // LOW: command. HIGH: character.
   uint8_t _rw_pin; // LOW: write to LCD. HIGH: read from LCD.
   uint8_t _enable_pin; // activated by a HIGH pulse.
@@ -29,6 +31,8 @@
 
   uint8_t _numlines;
   uint8_t _row_offsets[4];
+};
+  
 // When the display powers up, it is configured as follows:
 //
 // 1. Display clear
