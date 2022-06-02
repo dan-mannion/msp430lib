@@ -45,23 +45,23 @@
 struct LiquidCrystal liquidCrystalInit(uint8_t rs, uint8_t rw, uint8_t enable,
            uint8_t d0, uint8_t d1, uint8_t d2, uint8_t d3)
     
-  void begin(uint8_t cols, uint8_t rows, uint8_t charsize = LCD_5x8DOTS);
+  void begin(struct LiquidCrystal *lcd, uint8_t cols, uint8_t rows, uint8_t charsize = LCD_5x8DOTS);
 
-  void clear();
-  void home();
+  void clear(struct LiquidCrystal *lcd);
+  void home(struct LiquidCrystal *lcd);
 
-  void noDisplay();
-  void display();
-  void noBlink();
-  void blink();
-  void noCursor();
-  void cursor();
-  void scrollDisplayLeft();
-  void scrollDisplayRight();
-  void leftToRight();
-  void rightToLeft();
-  void autoscroll();
-  void noAutoscroll();
+  void noDisplay(struct LiquidCrystal *lcd);
+  void display(struct LiquidCrystal *lcd);
+  void noBlink(struct LiquidCrystal *lcd);
+  void blink(struct LiquidCrystal *lcd);
+  void noCursor(struct LiquidCrystal *lcd);
+  void cursor(struct LiquidCrystal *lcd);
+  void scrollDisplayLeft(struct LiquidCrystal *lcd);
+  void scrollDisplayRight(struct LiquidCrystal *lcd);
+  void leftToRight(struct LiquidCrystal *lcd);
+  void rightToLeft(struct LiquidCrystal *lcd);
+  void autoscroll(struct LiquidCrystal *lcd);
+  void noAutoscroll(struct LiquidCrystal *lcd);
 
 
 
