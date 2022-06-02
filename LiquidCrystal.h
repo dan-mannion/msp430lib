@@ -2,6 +2,8 @@
 #define LiquidCrystal_h
 
 #include <inttypes.h>
+#include <msp430.h>
+#include "macros.h"
 
 // commands
 #define LCD_CLEARDISPLAY 0x01
@@ -42,10 +44,26 @@
 #define LCD_5x8DOTS 0x00
 
 
-struct LiquidCrystal liquidCrystalInit(uint8_t _pin_port, uint8_t rs, uint8_t rw, uint8_t enable,
-           uint8_t d0, uint8_t d1, uint8_t d2, uint8_t d3)
+  struct LiquidCrystal{
+  uint8_t _pin_port;
+  uint8_t _rs_pin; // LOW: command. HIGH: character.
+  uint8_t _rw_pin; // LOW: write to LCD. HIGH: read from LCD.
+  uint8_t _enable_pin; // activated by a HIGH pulse.
+  uint8_t _data_pins[4];
+
+  uint8_t _displayfunction;
+  uint8_t _displaycontrol;
+  uint8_t _displaymode;
+
+  uint8_t _initialized;
+
+  uint8_t _numlines;
+  uint8_t _row_offsets[4];
+};
+
+  struct LiquidCrystal liquidCrystalInit(int _pin_port, uint8_t rs, uint8_t rw, uint8_t enable, uint8_t d0, uint8_t d1, uint8_t d2, uint8_t d3);
     
-  void begin(struct LiquidCrystal *lcd, uint8_t cols, uint8_t rows, uint8_t charsize = LCD_5x8DOTS);
+  void begin(struct LiquidCrystal *lcd, uint8_t cols, uint8_t rows, uint8_t charsize);
 
   void clear(struct LiquidCrystal *lcd);
   void home(struct LiquidCrystal *lcd);

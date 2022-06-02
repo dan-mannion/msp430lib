@@ -2,33 +2,20 @@
 
 //#include <stdio.h>
 //#include <string.h>
+//#include <stddef.h>
 #include <inttypes.h>
+#include <stddef.h>
 //#include "Arduino.h"
 #include "gpio.h"
 #include "timer.h"
 //DM remove arduino.h and add required includes: gpio, timers. 
-struct LiquidCrystal{
-  uint8_t _pin_port;
-  uint8_t _rs_pin; // LOW: command. HIGH: character.
-  uint8_t _rw_pin; // LOW: write to LCD. HIGH: read from LCD.
-  uint8_t _enable_pin; // activated by a HIGH pulse.
-  uint8_t _data_pins[4];
 
-  uint8_t _displayfunction;
-  uint8_t _displaycontrol;
-  uint8_t _displaymode;
-
-  uint8_t _initialized;
-
-  uint8_t _numlines;
-  uint8_t _row_offsets[4];
-};
   
 
   void setRowOffsets(struct LiquidCrystal *lcd, int row1, int row2, int row3, int row4);
   void createChar(struct LiquidCrystal *lcd, uint8_t, uint8_t[]);
   void setCursor(struct LiquidCrystal *lcd, uint8_t, uint8_t); 
-  size_t write(struct LiquidCrystal *lcd, uint8_t);
+  uint8_t write(struct LiquidCrystal *lcd, uint8_t);
   void command(struct LiquidCrystal *lcd, uint8_t);
   
   void send(struct LiquidCrystal *lcd, uint8_t, uint8_t);
@@ -56,10 +43,9 @@ struct LiquidCrystal{
 // LiquidCrystal constructor is called).
 
 
-struct LiquidCrystal liquidCrystalInit(int _pin_port, uint8_t rs, uint8_t rw, uint8_t enable,
-			     uint8_t d0, uint8_t d1, uint8_t d2, uint8_t d3){
+struct LiquidCrystal liquidCrystalInit(int _pin_port, uint8_t rs, uint8_t rw, uint8_t enable, uint8_t d0, uint8_t d1, uint8_t d2, uint8_t d3){
 
-  struct LiquidCrystal lcd = LiquidCrystal;
+  struct LiquidCrystal lcd;
   lcd._pin_port = _pin_port;
   lcd._rs_pin = rs;
   lcd._rw_pin = rw;
@@ -73,7 +59,7 @@ struct LiquidCrystal liquidCrystalInit(int _pin_port, uint8_t rs, uint8_t rw, ui
   //Settings TODO: check these are correct for teh 
   lcd._displayfunction = LCD_4BITMODE | LCD_1LINE | LCD_5x8DOTS;
 
-  begin(&lcd, 16, 1);  
+  begin(&lcd, 16, 1, LCD_5x8DOTS);  
 
   return lcd;
 }
@@ -93,7 +79,7 @@ void begin(struct LiquidCrystal *lcd, uint8_t cols, uint8_t lines, uint8_t dotsi
 
   setPinMode(lcd->_pin_port, lcd->_rs_pin, OUTPUT);
   // we can save 1 pin by not using RW. Indicate by passing 255 instead of pin#
-  if (_rw_pin != 255) { 
+  if (lcd->_rw_pin != 255) { 
     setPinMode(lcd->_pin_port, lcd->_rw_pin, OUTPUT);
   }
   setPinMode(lcd->_pin_port, lcd->_enable_pin, OUTPUT);
@@ -279,7 +265,7 @@ void command(struct LiquidCrystal *lcd, uint8_t value) {
   send(lcd, value, LOW);
 }
 
-size_t write(struct LiquidCrystal *lcd, uint8_t value) {
+uint8_t write(struct LiquidCrystal *lcd, uint8_t value) {
   send(lcd, value, HIGH);
   return 1; // assume success
 }
