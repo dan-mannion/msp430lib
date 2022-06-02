@@ -42,7 +42,7 @@
 #define LCD_5x8DOTS 0x00
 
 
-struct LiquidCrystal liquidCrystalInit(uint8_t rs, uint8_t rw, uint8_t enable,
+struct LiquidCrystal liquidCrystalInit(uint8_t _pin_port, uint8_t rs, uint8_t rw, uint8_t enable,
            uint8_t d0, uint8_t d1, uint8_t d2, uint8_t d3)
     
   void begin(struct LiquidCrystal *lcd, uint8_t cols, uint8_t rows, uint8_t charsize = LCD_5x8DOTS);

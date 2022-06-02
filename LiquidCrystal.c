@@ -1,11 +1,13 @@
 #include "LiquidCrystal.h"
 
-#include <stdio.h>
-#include <string.h>
+//#include <stdio.h>
+//#include <string.h>
 #include <inttypes.h>
-#include "Arduino.h"
+//#include "Arduino.h"
+#include "gpio.h"
 //DM remove arduino.h and add required includes: gpio, timers. 
 struct LiquidCrystal{
+  uint8_t _pin_port;
   uint8_t _rs_pin; // LOW: command. HIGH: character.
   uint8_t _rw_pin; // LOW: write to LCD. HIGH: read from LCD.
   uint8_t _enable_pin; // activated by a HIGH pulse.
@@ -53,10 +55,11 @@ struct LiquidCrystal{
 // LiquidCrystal constructor is called).
 
 
-struct LiquidCrystal liquidCrystalInit(uint8_t rs, uint8_t rw, uint8_t enable,
+struct LiquidCrystal liquidCrystalInit(int _pin_port, uint8_t rs, uint8_t rw, uint8_t enable,
 			     uint8_t d0, uint8_t d1, uint8_t d2, uint8_t d3){
 
   struct LiquidCrystal lcd = LiquidCrystal;
+  lcd._pin_port = _pin_port;
   lcd._rs_pin = rs;
   lcd._rw_pin = rw;
   lcd._enable_pin = enable;
@@ -87,17 +90,17 @@ void begin(struct LiquidCrystal *lcd, uint8_t cols, uint8_t lines, uint8_t dotsi
     lcd->_displayfunction |= LCD_5x10DOTS;
   }
 
-  pinMode(lcd->_rs_pin, OUTPUT);
+  setPinMode(lcd->_pin_port, lcd->_rs_pin, OUTPUT);
   // we can save 1 pin by not using RW. Indicate by passing 255 instead of pin#
   if (_rw_pin != 255) { 
-    pinMode(lcd->_rw_pin, OUTPUT);
+    setPinMode(lcd->_pin_port, lcd->_rw_pin, OUTPUT);
   }
-  pinMode(lcd->_enable_pin, OUTPUT);
+  setPinMode(lcd->_pin_port, lcd->_enable_pin, OUTPUT);
   
   // Do these once, instead of every time a character is drawn for speed reasons.
   for (int i=0; i<((lcd->_displayfunction & LCD_8BITMODE) ? 8 : 4); ++i)
   {
-    pinMode(lcd->_data_pins[i], OUTPUT);
+    setPinMode(lcd->_pin_port, lcd->_data_pins[i], OUTPUT);
    } 
 
   // SEE PAGE 45/46 FOR INITIALIZATION SPECIFICATION!
@@ -105,10 +108,10 @@ void begin(struct LiquidCrystal *lcd, uint8_t cols, uint8_t lines, uint8_t dotsi
   // before sending commands. Arduino can turn on way before 4.5 V so we'll wait 50
   delayMicroseconds(50000); 
   // Now we pull both RS and R/W low to begin commands
-  digitalWrite(lcd->_rs_pin, LOW);
-  digitalWrite(lcd->_enable_pin, LOW);
+  writePinOutput(lcd->_pin_port, lcd->_rs_pin, LOW);
+  writePinOutput(lcd->_pin_port, lcd->_enable_pin, LOW);
   if (lcd->_rw_pin != 255) { 
-    digitalWrite(lcd->_rw_pin, LOW);
+    writePinOutput(lcd->_pin_port, lcd->_rw_pin, LOW);
   }
   
   //put the LCD into 4 bit or 8 bit mode
@@ -284,11 +287,11 @@ size_t write(struct LiquidCrystal *lcd, uint8_t value) {
 
 // write either command or data, with automatic 4/8-bit selection
 void send(struct LiquidCrystal *lcd, uint8_t value, uint8_t mode) {
-  digitalWrite(lcd->_rs_pin, mode);
+  writePinOutput(lcd->_pin_port, lcd->_rs_pin, mode);
 
   // if there is a RW pin indicated, set it low to Write
   if (lcd->_rw_pin != 255) { 
-    digitalWrite(lcd->_rw_pin, LOW);
+    writePinOutput(lcd->_pin_port, lcd->_rw_pin, LOW);
   } 
   
   write4bits(lcd, value>>4);
@@ -296,17 +299,17 @@ void send(struct LiquidCrystal *lcd, uint8_t value, uint8_t mode) {
 }
 
 void pulseEnable(struct LiquidCrystal *lcd) {
-  digitalWrite(lcd->_enable_pin, LOW);
+  writePinOutput(lcd->_pin_port, lcd->_enable_pin, LOW);
   delayMicroseconds(1);    
-  digitalWrite(lcd->_enable_pin, HIGH);
+  writePinOutput(lcd->_pin_port, lcd->_enable_pin, HIGH);
   delayMicroseconds(1);    // enable pulse must be >450 ns
-  digitalWrite(lcd->_enable_pin, LOW);
+  writePinOutput(lcd->_pin_port, lcd->_enable_pin, LOW);
   delayMicroseconds(100);   // commands need >37 us to settle
 }
 
 void write4bits(struct LiquidCrystal *lcd, uint8_t value) {
   for (int i = 0; i < 4; i++) {
-    digitalWrite(lcd->_data_pins[i], (value >> i) & 0x01);
+    writePinOutput(lcd->_pin_port, lcd->_data_pins[i], (value >> i) & 0x01);
   }
 
   pulseEnable(lcd);
