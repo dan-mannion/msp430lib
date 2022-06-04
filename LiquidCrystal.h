@@ -63,23 +63,24 @@
 
   struct LiquidCrystal liquidCrystalInit(int _pin_port, uint8_t rs, uint8_t rw, uint8_t enable, uint8_t d0, uint8_t d1, uint8_t d2, uint8_t d3);
     
-  void begin(struct LiquidCrystal *lcd, uint8_t cols, uint8_t rows, uint8_t charsize);
+  void lcdBegin(struct LiquidCrystal *lcd, uint8_t cols, uint8_t rows, uint8_t charsize);
+  void lcdPrint(struct LiquidCrystal *lcd, char *str_p);
 
-  void clear(struct LiquidCrystal *lcd);
-  void home(struct LiquidCrystal *lcd);
+  void lcdClear(struct LiquidCrystal *lcd);
+  void lcdHome(struct LiquidCrystal *lcd);
 
-  void noDisplay(struct LiquidCrystal *lcd);
-  void display(struct LiquidCrystal *lcd);
-  void noBlink(struct LiquidCrystal *lcd);
-  void blink(struct LiquidCrystal *lcd);
-  void noCursor(struct LiquidCrystal *lcd);
-  void cursor(struct LiquidCrystal *lcd);
-  void scrollDisplayLeft(struct LiquidCrystal *lcd);
-  void scrollDisplayRight(struct LiquidCrystal *lcd);
-  void leftToRight(struct LiquidCrystal *lcd);
-  void rightToLeft(struct LiquidCrystal *lcd);
-  void autoscroll(struct LiquidCrystal *lcd);
-  void noAutoscroll(struct LiquidCrystal *lcd);
+  void lcdNoDisplay(struct LiquidCrystal *lcd);
+  void lcdDisplay(struct LiquidCrystal *lcd);
+  void lcdNoBlink(struct LiquidCrystal *lcd);
+  void lcdBlink(struct LiquidCrystal *lcd);
+  void lcdNoCursor(struct LiquidCrystal *lcd);
+  void lcdCursor(struct LiquidCrystal *lcd);
+  void lcdScrollDisplayLeft(struct LiquidCrystal *lcd);
+  void lcdScrollDisplayRight(struct LiquidCrystal *lcd);
+  void lcdLeftToRight(struct LiquidCrystal *lcd);
+  void lcdRightToLeft(struct LiquidCrystal *lcd);
+  void lcdAutoscroll(struct LiquidCrystal *lcd);
+  void lcdNoAutoscroll(struct LiquidCrystal *lcd);
 
 
 

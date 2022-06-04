@@ -15,12 +15,12 @@ void main(){
 	uint8_t d3 = 5;
 
 	struct LiquidCrystal lcd = liquidCrystalInit(PORT2,rs,rw,en,d0,d1,d2,d3);
-	begin(&lcd,16,1,LCD_5x8DOTS);
-	home(&lcd);
-	cursor(&lcd);
-	//print("Hello");	
-	char str[] = "hello world";
+	lcdBegin(&lcd,16,1,LCD_5x8DOTS);
+	lcdHome(&lcd);
+	lcdCursor(&lcd);
+	char str[] = "hello";
 	uartPrintln(&str[0]);
+	lcdPrint(&lcd, &str[0]);	
 	while(1){
 		//uartWriteChar('X');
 	}

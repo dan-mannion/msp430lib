@@ -1,5 +1,6 @@
 #include "LiquidCrystal.h"
 
+#include "mspString.h"
 //#include <stdio.h>
 //#include <string.h>
 //#include <stddef.h>
@@ -8,9 +9,9 @@
 //#include "Arduino.h"
 #include "gpio.h"
 #include "timer.h"
+
 //DM remove arduino.h and add required includes: gpio, timers. 
 
-  
 
   void setRowOffsets(struct LiquidCrystal *lcd, int row1, int row2, int row3, int row4);
   void createChar(struct LiquidCrystal *lcd, uint8_t, uint8_t[]);
@@ -59,12 +60,12 @@ struct LiquidCrystal liquidCrystalInit(int _pin_port, uint8_t rs, uint8_t rw, ui
   //Settings TODO: check these are correct for teh 
   lcd._displayfunction = LCD_4BITMODE | LCD_1LINE | LCD_5x8DOTS;
 
-  begin(&lcd, 16, 1, LCD_5x8DOTS);  
+  lcdBegin(&lcd, 16, 1, LCD_5x8DOTS);  
 
   return lcd;
 }
 
-void begin(struct LiquidCrystal *lcd, uint8_t cols, uint8_t lines, uint8_t dotsize) {
+void lcdBegin(struct LiquidCrystal *lcd, uint8_t cols, uint8_t lines, uint8_t dotsize) {
   if (lines > 1) {
     lcd->_displayfunction |= LCD_2LINE;
   }
@@ -141,10 +142,10 @@ void begin(struct LiquidCrystal *lcd, uint8_t cols, uint8_t lines, uint8_t dotsi
 
   // turn the display on with no cursor or blinking default
   lcd->_displaycontrol = LCD_DISPLAYON | LCD_CURSOROFF | LCD_BLINKOFF;  
-  display(lcd);
+  lcdDisplay(lcd);
 
   // clear it off
-  clear(lcd);
+  lcdClear(lcd);
 
   // Initialize to default text direction (for romance languages)
   lcd->_displaymode = LCD_ENTRYLEFT | LCD_ENTRYSHIFTDECREMENT;
@@ -162,13 +163,13 @@ void setRowOffsets(struct LiquidCrystal *lcd, int row0, int row1, int row2, int 
 }
 
 /********** high level commands, for the user! */
-void clear(struct LiquidCrystal *lcd)
+void lcdClear(struct LiquidCrystal *lcd)
 {
   command(lcd, LCD_CLEARDISPLAY);  // clear display, set cursor position to zero
   delayMicrosecond(2000);  // this command takes a long time!
 }
 
-void home(struct LiquidCrystal *lcd)
+void lcdHome(struct LiquidCrystal *lcd)
 {
   command(lcd, LCD_RETURNHOME);  // set cursor position to zero
   delayMicrosecond(2000);  // this command takes a long time!
@@ -188,63 +189,63 @@ void setCursor(struct LiquidCrystal *lcd, uint8_t col, uint8_t row)
 }
 
 // Turn the display on/off (quickly)
-void noDisplay(struct LiquidCrystal *lcd) {
+void lcdNoDisplay(struct LiquidCrystal *lcd) {
   lcd->_displaycontrol &= ~LCD_DISPLAYON;
   command(lcd, LCD_DISPLAYCONTROL | lcd->_displaycontrol);
 }
-void display(struct LiquidCrystal *lcd) {
+void lcdDisplay(struct LiquidCrystal *lcd) {
   lcd->_displaycontrol |= LCD_DISPLAYON;
   command(lcd, LCD_DISPLAYCONTROL | lcd->_displaycontrol);
 }
 
 // Turns the underline cursor on/off
-void noCursor(struct LiquidCrystal *lcd) {
+void lcdNoCursor(struct LiquidCrystal *lcd) {
   lcd->_displaycontrol &= ~LCD_CURSORON;
   command(lcd, LCD_DISPLAYCONTROL | lcd->_displaycontrol);
 }
-void cursor(struct LiquidCrystal *lcd) {
+void lcdCursor(struct LiquidCrystal *lcd) {
   lcd->_displaycontrol |= LCD_CURSORON;
   command(lcd, LCD_DISPLAYCONTROL | lcd->_displaycontrol);
 }
 
 // Turn on and off the blinking cursor
-void noBlink(struct LiquidCrystal *lcd) {
+void lcdNoBlink(struct LiquidCrystal *lcd) {
   lcd->_displaycontrol &= ~LCD_BLINKON;
   command(lcd, LCD_DISPLAYCONTROL | lcd->_displaycontrol);
 }
-void blink(struct LiquidCrystal *lcd) {
+void lcdBlink(struct LiquidCrystal *lcd) {
   lcd->_displaycontrol |= LCD_BLINKON;
   command(lcd, LCD_DISPLAYCONTROL | lcd->_displaycontrol);
 }
 
 // These commands scroll the display without changing the RAM
-void scrollDisplayLeft(struct LiquidCrystal *lcd) {
+void lcdScrollDisplayLeft(struct LiquidCrystal *lcd) {
   command(lcd, LCD_CURSORSHIFT | LCD_DISPLAYMOVE | LCD_MOVELEFT);
 }
-void scrollDisplayRight(struct LiquidCrystal *lcd) {
+void lcdScrollDisplayRight(struct LiquidCrystal *lcd) {
   command(lcd, LCD_CURSORSHIFT | LCD_DISPLAYMOVE | LCD_MOVERIGHT);
 }
 
 // This is for text that flows Left to Right
-void leftToRight(struct LiquidCrystal *lcd) {
+void lcdLeftToRight(struct LiquidCrystal *lcd) {
   lcd->_displaymode |= LCD_ENTRYLEFT;
   command(lcd, LCD_ENTRYMODESET | lcd->_displaymode);
 }
 
 // This is for text that flows Right to Left
-void rightToLeft(struct LiquidCrystal *lcd) {
+void lcdRightToLeft(struct LiquidCrystal *lcd) {
   lcd->_displaymode &= ~LCD_ENTRYLEFT;
   command(lcd, LCD_ENTRYMODESET | lcd->_displaymode);
 }
 
 // This will 'right justify' text from the cursor
-void autoscroll(struct LiquidCrystal *lcd) {
+void lcdAutoscroll(struct LiquidCrystal *lcd) {
   lcd->_displaymode |= LCD_ENTRYSHIFTINCREMENT;
   command(lcd, LCD_ENTRYMODESET | lcd->_displaymode);
 }
 
 // This will 'left justify' text from the cursor
-void noAutoscroll(struct LiquidCrystal *lcd) {
+void lcdNoAutoscroll(struct LiquidCrystal *lcd) {
   lcd->_displaymode &= ~LCD_ENTRYSHIFTINCREMENT;
   command(lcd, LCD_ENTRYMODESET | lcd->_displaymode);
 }
@@ -259,6 +260,14 @@ void createChar(struct LiquidCrystal *lcd, uint8_t location, uint8_t charmap[]) 
   }
 }
 
+
+void lcdPrint(struct LiquidCrystal *lcd, char *str_p){
+  int len = getStrLen(str_p);
+  int n = 0;
+  for(n;n<len;n++){
+    write(lcd, (uint8_t)(*(str_p+n)));
+  } 
+}
 /*********** mid level commands, for sending data/cmds */
 
 void command(struct LiquidCrystal *lcd, uint8_t value) {
