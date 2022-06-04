@@ -1,9 +1,5 @@
 #include "uart.h"
-int getStrLen(char *str){
-	int len = 0;
-	for(len;*(str+len)!='\0';len++){;}
-	return len;
-}
+#include "mspString.h"
 void uartPause(){
 	bis(UCA0CTL1, UCSWRST);
 }
