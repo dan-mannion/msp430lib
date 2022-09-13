@@ -2,9 +2,7 @@
 #include "rand.h"
 #include "timer.h"
 #include "mspString.h"
-void timerStartContinuous(){
-	bis(TACTL, MC1);
-};
+
 
 void main(){
 	stopWatchdogTimer();	
@@ -13,6 +11,7 @@ void main(){
 	timerInitMicrosecond();
 	char str[] = "hello world";
 	uartPrintln(&str[0]);
+	
 
 	initRand();
 	char numstr[4];	
