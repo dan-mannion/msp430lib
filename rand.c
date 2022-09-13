@@ -1,4 +1,5 @@
 #include "rand.h"
+char RAND_ISINIT;
 char RAND_SEED;
 void initRand(){
 	//timerInitMicrosecond();
@@ -9,8 +10,12 @@ void initRand(){
 	
 	bis(TACTL, MC1);
 	RAND_SEED = TAR;
+	RAND_ISINIT = 1;
 }
 char randomChar(){
+	if(RAND_ISINIT==0){
+		initRand();
+	}
 	RAND_SEED = 61*RAND_SEED+1;
 	return RAND_SEED;
 }
