@@ -19,11 +19,11 @@ void resetTimer1Count(){
 }
 void resetTimer0(){
 	bis(TACTL, TACLR);
-	resetTimerCount();
+	resetTimer0Count();
 }
 void resetTimer1(){
 	bis(TA1CTL, TACLR);
-	resetTimerCount();
+	resetTimer1Count();
 }
 
 
@@ -80,9 +80,9 @@ void startTimer1(){
 }
 
 void timer0Init(){
-	stopTimer();
-	resetTimer();
-	resetFlag();
+	stopTimer0();
+	resetTimer0();
+	resetFlagTimer0();
 	//select clock source
 	bic(TACTL, TASSEL0);
 	bis(TACTL, TASSEL1);
@@ -93,9 +93,9 @@ void timer0Init(){
 	//bis(TACCTL0, OUTMOD0);
 }
 void timer1Init(){
-	stopTimer();
-	resetTimer();
-	resetFlag();
+	stopTimer1();
+	resetTimer1();
+	resetFlagTimer1();
 	//select clock source
 	bic(TA1CTL, TASSEL0);
 	bis(TA1CTL, TASSEL1);
@@ -106,9 +106,9 @@ void timer1Init(){
 	//bis(TACCTL0, OUTMOD0);
 }
 void timer0InitMicrosecond(){
-	stopTimer();
-	resetTimer();
-	resetFlag();
+	stopTimer0();
+	resetTimer0();
+	resetFlagTimer0();
 	//select clock source
 	bic(TACTL, TASSEL0);
 	bis(TACTL, TASSEL1);
@@ -118,9 +118,9 @@ void timer0InitMicrosecond(){
 
 }
 void timer1InitMicrosecond(){
-	stopTimer();
-	resetTimer();
-	resetFlag();
+	stopTimer1();
+	resetTimer1();
+	resetFlagTimer1();
 	//select clock source
 	bic(TA1CTL, TASSEL0);
 	bis(TA1CTL, TASSEL1);
@@ -130,9 +130,9 @@ void timer1InitMicrosecond(){
 
 }
 void timer0StartMillisecond(int duration){
-	timerInit();
-	setAlarmValue(duration*125);	//when smclk is at 1meghz and div set to 8 then 125 counts=1millisecond	
-	startTimer();
+	timer0Init();
+	setAlarmValueTimer0(duration*125);	//when smclk is at 1meghz and div set to 8 then 125 counts=1millisecond	
+	startTimer0();
 }
 void timer1StartMillisecond(int duration){
 	timer1Init();
@@ -140,9 +140,9 @@ void timer1StartMillisecond(int duration){
 	startTimer1();
 }
 void timer0StartMicrosecond(int duration){
-	timerInitMicrosecond();
-	setAlarmValue(duration);	//when smclk is at 1meghz and div set to 8 then 125 counts=1millisecond	
-	startTimer();
+	timer0InitMicrosecond();
+	setAlarmValueTimer0(duration);	//when smclk is at 1meghz and div set to 8 then 125 counts=1millisecond	
+	startTimer0();
 }
 void timer1StartMicrosecond(int duration){
 	timer1InitMicrosecond();
@@ -150,8 +150,8 @@ void timer1StartMicrosecond(int duration){
 	startTimer1();
 }
 int timer0IsFinished(){
-	if(timerFlagRaised()){
-		stopTimer();
+	if(timer0FlagRaised()){
+		stopTimer0();
 		return 1;
 	}else{
 		return 0;
@@ -166,16 +166,16 @@ int timer1IsFinished(){
 	}
 }
 void delayMillisecondTimer0(int duration){
-	timerStartMillisecond(duration);
-	while(!timerIsFinished()){;}
+	timer0StartMillisecond(duration);
+	while(!timer0IsFinished()){;}
 }
 void delayMillisecondTimer1(int duration){
 	timer1StartMillisecond(duration);
 	while(!timer1IsFinished()){;}
 }
 void delayMicrosecondTimer0(int duration){
-	timerStartMicrosecond(duration);
-	while(!timerIsFinished()){;}
+	timer0StartMicrosecond(duration);
+	while(!timer0IsFinished()){;}
 }
 void delayMicrosecondTimer1(int duration){
 	timer1StartMicrosecond(duration);
