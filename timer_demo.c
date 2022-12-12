@@ -2,7 +2,7 @@
 
 void main(){
 	int i;
-	int delay = 10000;
+	int delay = 100;
 	systemInit();
 	timer0Init();
 	
@@ -13,7 +13,7 @@ void main(){
 		writePinOutput(1,0, HIGH);
 		writePinOutput(1,6, HIGH);
 
-		timer0StartMillisecond(500);
+		timer0StartMillisecond(delay);
 		while(timer0IsFinished()==0){;}
 		
 		writePinOutput(1,0,LOW);
