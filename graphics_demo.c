@@ -72,6 +72,49 @@ void lcdWriteData(struct LCD *lcd, unsigned char cmd){
 	//Signal end of transmission
 	//writePinOutput(lcd->control_port, lcd->chip_select_pin, HIGH);
 }
+void lcdSetColumns(struct LCD *lcd, char start, char end){
+	unsigned char cmd_CASET = 0x2a;
+	lcdWriteCommand(lcd, cmd_CASET);	
+	lcdWriteData(lcd, 0);//Upper 8 bits always set to 0 as max value is 127
+	lcdWriteData(lcd, start); //Lower 8 bits are set according to the parameter
+	lcdWriteData(lcd, 0);
+	lcdWriteData(lcd, end);
+}
+void lcdSetRows(struct LCD *lcd, char start, char end){
+	unsigned char cmd_RASET = 0x2b;
+	lcdWriteCommand(lcd, cmd_RASET);	
+	lcdWriteData(lcd, 0);//Upper 8 bits always set to 0 as max value is 127
+	lcdWriteData(lcd, start); //Lower 8 bits are set according to the parameter
+	lcdWriteData(lcd, 0);
+	lcdWriteData(lcd, end);
+}
+void lcdDisplayOn(struct LCD *lcd){
+	unsigned char cmd_DISPON = (unsigned char) 0x29;
+	unsigned char cmd_SLPOUT = (unsigned char) 0x11;
+	unsigned char cmd_COLMOD = 0x3a;
+	lcdWriteCommand(lcd, cmd_SLPOUT);
+	lcdWriteCommand(lcd, cmd_DISPON);
+	lcdWriteCommand(lcd, cmd_COLMOD);
+	lcdWriteData(lcd, 0x03);
+}
+void lcdDrawRectangle(struct LCD *lcd, char xstart, char ystart, char xend, char yend, char colour[3]){
+	unsigned char cmd_WRITERAM = (unsigned char) 0x2c;
+	lcdSetColumns(lcd, ystart, yend);
+	lcdSetRows(lcd, xstart, xend);	
+	char x,y;
+	char pixel_upper_byte;
+	char pixel_lower_byte;
+	
+	lcdWriteCommand(lcd, cmd_WRITERAM);
+	for (y=ystart; y<=yend;y++){
+		for(x=xstart;x<=xend;x++){
+			pixel_upper_byte = (colour[0]<<3)||(colour[1]>>3);
+			pixel_lower_byte = (colour[1]<<5)||(colour[2]);
+			lcdWriteData(lcd, pixel_upper_byte);
+			lcdWriteData(lcd, pixel_lower_byte);
+		}
+	}
+}
 void main(){
 	systemInit();
 
@@ -84,37 +127,44 @@ void main(){
 	unsigned char cmd_INVOFF = (unsigned char) 0x20;
 	unsigned char cmd_SLPOUT = (unsigned char) 0x11;
 	unsigned char cmd_COLMOD = 0x3a;
+	unsigned char cmd_CASET = 0x2a;
+	unsigned char cmd_RASET = 0x2b;
 	
 		//writePinOutput(lcd.control_port, lcd.chip_select_pin, HIGH);
 		//delayMillisecondTimer1(500);
-		writePinOutput(lcd.control_port, lcd.chip_select_pin, LOW);
-		delayMillisecondTimer1(500);
-		lcdWriteCommand(&lcd, cmd_SLPOUT);
+	writePinOutput(lcd.control_port, lcd.chip_select_pin, LOW);
+	delayMillisecondTimer1(500);
+		/*lcdWriteCommand(&lcd, cmd_SLPOUT);
 		lcdWriteCommand(&lcd, cmd_DISPON);
 		lcdWriteCommand(&lcd, cmd_COLMOD);
-		lcdWriteData(&lcd, 0x03);
-		lcdWriteCommand(&lcd, cmd_WRITERAM);
-	int n;
+		lcdWriteData(&lcd, 0x03);*/
+	lcdDisplayOn(&lcd);
+	//lcdWriteCommand(&lcd, cmd_WRITERAM);
+	int r,c;
+	char r1[] = {0,0,10,10};
+	char r2[] = {40,40,80,80};
+	char red[] = {31,0,0};
+	char green[] = {0,31,0};
+	char blue[] = {0,31,0};
+	char *colours[] = {red, green, blue};//Need to double check this is working properly. Not sure on syntax.
 	while(1){
-		/*lcdWriteCommand(&lcd, cmd_DISPON);
-		for(n=0;n<2;n++)
-			delayMillisecondTimer1(500);
-		lcdWriteCommand(&lcd, cmd_DISPOFF);
-		for(n=0;n<2;n++)
-			delayMillisecondTimer1(500);
-		*/	
-		//lcdWriteCommand(&lcd, cmd_WRITERAM);
-		for(n=0;n<0xff;n++){
-		lcdWriteData(&lcd, 0xaa);
-		lcdWriteData(&lcd, 0x11);
-		lcdWriteData(&lcd, 0xff);
-		lcdWriteData(&lcd, 0x5c);
-		lcdWriteData(&lcd, 0x31);
+		/*for(n=0;n<0xff;n++){
+			lcdWriteData(&lcd, 0xaa);
+			lcdWriteData(&lcd, 0x11);
+			lcdWriteData(&lcd, 0xff);
+			lcdWriteData(&lcd, 0x5c);
+			lcdWriteData(&lcd, 0x31);
 		}
 		for(n=0;n<0xcc;n++){
 			lcdWriteData(&lcd, 0xff);
+		}*/
+		for(c=0;c<3;c++){
+			lcdDrawRectangle(&lcd, r1[0],r1[1],r1[2],r1[3], (colours[c]));
+			delayMillisecondTimer1(500);
+			lcdDrawRectangle(&lcd, r2[0],r2[1],r2[2],r2[3], (colours[c]));
+			delayMillisecondTimer1(500);
 		}
-	//	lcdWriteCommand(&lcd, cmd_DISPOFF);
+
 			
 	}
 }
