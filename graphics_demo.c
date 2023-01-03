@@ -95,26 +95,34 @@ void lcdDisplayOn(struct LCD *lcd){
 	lcdWriteCommand(lcd, cmd_SLPOUT);
 	lcdWriteCommand(lcd, cmd_DISPON);
 	lcdWriteCommand(lcd, cmd_COLMOD);
-	lcdWriteData(lcd, 0x03);
+	lcdWriteData(lcd, 0x05);
 }
-void lcdDrawRectangle(struct LCD *lcd, char xstart, char ystart, char xend, char yend, char colour[3]){
+void lcdDrawRectangle(struct LCD *lcd, char xstart, char ystart, char xend, char yend, char colour[]){
 	unsigned char cmd_WRITERAM = (unsigned char) 0x2c;
 	lcdSetColumns(lcd, ystart, yend);
 	lcdSetRows(lcd, xstart, xend);	
 	char x,y;
 	char pixel_upper_byte;
 	char pixel_lower_byte;
+	//colour[0] = 0; colour[1]=0;colour[2]=31;
 	
 	lcdWriteCommand(lcd, cmd_WRITERAM);
 	for (y=ystart; y<=yend;y++){
 		for(x=xstart;x<=xend;x++){
-			pixel_upper_byte = (colour[0]<<3)||(colour[1]>>3);
-			pixel_lower_byte = (colour[1]<<5)||(colour[2]);
+			pixel_upper_byte = (colour[0]<<3)|(colour[1]>>3);
+			pixel_lower_byte = (colour[1]<<5)|(colour[2]);
 			lcdWriteData(lcd, pixel_upper_byte);
 			lcdWriteData(lcd, pixel_lower_byte);
+			//lcdWriteData(lcd, 0x07);
+			//lcdWriteData(lcd, 0x70);
 		}
 	}
 }
+void lcdClearScreen(struct LCD *lcd){
+	char black[] = {0,0,0};
+	lcdDrawRectangle(lcd, 0,0,127,127,black);
+}
+
 void main(){
 	systemInit();
 
@@ -139,13 +147,14 @@ void main(){
 		lcdWriteCommand(&lcd, cmd_COLMOD);
 		lcdWriteData(&lcd, 0x03);*/
 	lcdDisplayOn(&lcd);
+	lcdClearScreen(&lcd);
 	//lcdWriteCommand(&lcd, cmd_WRITERAM);
 	int r,c;
 	char r1[] = {0,0,10,10};
 	char r2[] = {40,40,80,80};
 	char red[] = {31,0,0};
 	char green[] = {0,31,0};
-	char blue[] = {0,31,0};
+	char blue[] = {0,0,31};
 	char *colours[] = {red, green, blue};//Need to double check this is working properly. Not sure on syntax.
 	while(1){
 		/*for(n=0;n<0xff;n++){
