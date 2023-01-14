@@ -85,7 +85,7 @@ void lcdDisplayOn(struct LCD *lcd){
 	lcdWriteCommand(lcd, cmd_COLMOD);
 	lcdWriteData(lcd, opt_RGB565);
 }
-void lcdDrawRectangle(struct LCD *lcd, char xstart, char ystart, char xend, char yend, char colour[]){
+void lcdDrawRectangle(struct LCD *lcd, char xstart, char ystart, char xend, char yend, char red, char green, char blue){
 	lcdSetColumns(lcd, ystart, yend);
 	lcdSetRows(lcd, xstart, xend);	
 	char x,y;
@@ -96,16 +96,15 @@ void lcdDrawRectangle(struct LCD *lcd, char xstart, char ystart, char xend, char
 	lcdWriteCommand(lcd, cmd_WRITERAM);
 	for (y=ystart; y<=yend;y++){
 		for(x=xstart;x<=xend;x++){
-			pixel_upper_byte = (colour[2]<<3)|(colour[1]>>3);
-			pixel_lower_byte = (colour[1]<<5)|(colour[0]);
+			pixel_upper_byte = (blue<<3)|(green>>3);
+			pixel_lower_byte = (green<<5)|(red);
 			lcdWriteData(lcd, pixel_upper_byte);
 			lcdWriteData(lcd, pixel_lower_byte);
 		}
 	}
 }
 void lcdClearScreen(struct LCD *lcd){
-	char black[] = {0,0,0};
-	lcdDrawRectangle(lcd, 0,0,127,127,black);
+	lcdDrawRectangle(lcd, 0,0,127,127,0,0,0);
 }
 
 

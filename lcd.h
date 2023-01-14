@@ -23,7 +23,7 @@ struct LCD{
 
 struct LCD lcdInit();
 void lcdDisplayOn(struct LCD *lcd);
-void lcdDrawRectangle(struct LCD *lcd, char xstart, char ystart, char xend, char yend, char colour[]);
+void lcdDrawRectangle(struct LCD *lcd, char xstart, char ystart, char xend, char yend, char red, char green, char blue);
 void lcdClearScreen(struct LCD *lcd);
 
 #endif
