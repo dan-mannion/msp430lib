@@ -1,14 +1,14 @@
 #include "lcd.h"
 #include "gpio.h"
 #include "timer.h"
-struct LCD lcdInit(){
+struct LCD lcdInit(char control_port, char write_enable, char data_cmd_sel, char data_port){
 	//Initialises and returns a lcd struct
 	struct LCD lcd; 
-	lcd.control_port = PORT1;
+	lcd.control_port = control_port;
 	lcd.chip_select_pin = 5;
-	lcd.write_enable_pin = 4;
-	lcd.data_command_select_pin = 3;
-	lcd.data_bus_port = PORT2;	
+	lcd.write_enable_pin = write_enable;
+	lcd.data_command_select_pin = data_cmd_sel;
+	lcd.data_bus_port = data_port;	
 	
 	//Initilise gpio pins. 
 	setPinMode(lcd.control_port, lcd.chip_select_pin, OUTPUT);
@@ -92,12 +92,19 @@ void lcdDrawRectangle(struct LCD *lcd, char xstart, char ystart, char xend, char
 	char pixel_upper_byte;
 	char pixel_lower_byte;
 	//colour[0] = 0; colour[1]=0;colour[2]=31;
-	
+	char ru, gu, gl,bl;
+	ru = ((red&0x1f)<<3)&(0xf8);
+			gu = ((green&0x38)>>3)&(0x07);
+			gl = ((green&0x07)<<3)&(0xE0);
+			bl = (blue&0x1f);	
+			pixel_upper_byte = ru|gu;	
+			pixel_lower_byte = gl|bl;
+
 	lcdWriteCommand(lcd, cmd_WRITERAM);
 	for (y=ystart; y<=yend;y++){
 		for(x=xstart;x<=xend;x++){
-			pixel_upper_byte = (blue<<3)|(green>>3);
-			pixel_lower_byte = (green<<5)|(red);
+						/*pixel_upper_byte = (blue<<3)|(green>>3);
+			pixel_lower_byte = (green<<5)|(red);*/
 			lcdWriteData(lcd, pixel_upper_byte);
 			lcdWriteData(lcd, pixel_lower_byte);
 		}

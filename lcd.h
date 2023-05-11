@@ -21,7 +21,7 @@ struct LCD{
 };
 
 
-struct LCD lcdInit();
+struct LCD lcdInit(char control_port, char write_enable, char data_cmd_sel, char data_port);
 void lcdDisplayOn(struct LCD *lcd);
 void lcdDrawRectangle(struct LCD *lcd, char xstart, char ystart, char xend, char yend, char red, char green, char blue);
 void lcdClearScreen(struct LCD *lcd);
