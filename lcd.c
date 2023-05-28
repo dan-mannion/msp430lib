@@ -5,14 +5,14 @@ struct LCD lcdInit(char control_port, char write_enable, char data_cmd_sel, char
 	//Initialises and returns a lcd struct
 	struct LCD lcd; 
 	lcd.control_port = control_port;
-	lcd.chip_select_pin = 5;
+	//lcd.chip_select_pin = 5;
 	lcd.write_enable_pin = write_enable;
 	lcd.data_command_select_pin = data_cmd_sel;
 	lcd.data_bus_port = data_port;	
 	
 	//Initilise gpio pins. 
-	setPinMode(lcd.control_port, lcd.chip_select_pin, OUTPUT);
-	writePinOutput(lcd.control_port, lcd.chip_select_pin, LOW);
+	//setPinMode(lcd.control_port, lcd.chip_select_pin, OUTPUT);
+	//writePinOutput(lcd.control_port, lcd.chip_select_pin, LOW);
 	setPinMode(lcd.control_port, lcd.write_enable_pin, OUTPUT);
 	writePinOutput(lcd.control_port, lcd.write_enable_pin, HIGH);
 	setPinMode(lcd.control_port, lcd.data_command_select_pin, OUTPUT);
