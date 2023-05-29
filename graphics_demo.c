@@ -1,7 +1,7 @@
 #include "msp430lib.h"
 #include "lcd.h"
 void main(){
-	systemInit();
+	systemInit16MHz();
 
 	char control_port = PORT1;
 	char write_enable_pin = 7;//Originall 1.4
@@ -13,7 +13,7 @@ void main(){
 	lcdDisplayOn(&lcd);
 	//lcdClearScreen(&lcd);
 	int r,c;
-	char r1[] = {0,0,50,50};
+	char r1[] = {0,0,127,127};
 	char r2[] = {50,50,100,100};
 	char red[] = {10,10,10};
 	char green[] = {10,20,10};
