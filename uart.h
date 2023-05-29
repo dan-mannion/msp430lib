@@ -6,6 +6,7 @@
 #include "watchdog.h"
 
 void uartInit();
+void uartInit16MHz();
 void uartPrintln(char *str_p);
 int uartCharReceived();
 char uartReadChar();

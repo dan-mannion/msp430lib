@@ -27,6 +27,29 @@ void uartInit(){
 	setPinFunction(PORT1, 2, 3);
 	uartStart();
 }
+void uartInitClock16MHz(){
+  	BCSCTL1 = CALBC1_16MHZ;                    // Set DCO
+    	DCOCTL = CALDCO_16MHZ;
+	bis(UCA0CTL1, UCSSEL_2);
+}
+void uartInit16MHz(){
+	uartPause();
+	uartInitClock16MHz();
+	
+	//Set baud rate to 9600
+	bic(UCA0MCTL, UCOS16);
+	UCA0BR0 = 130;
+	UCA0BR1 = 6;
+
+	bis(UCA0MCTL,UCBRS0);//Sets modulation type to 6
+	bis(UCA0MCTL,UCBRS1);//Sets modulation type to 6
+	bis(UCA0MCTL,UCBRS2);//Sets modulation type to 6
+
+	setPinFunction(PORT1, 1, 3);
+	setPinFunction(PORT1, 2, 3);
+	uartStart();
+
+}
 int uartBusy(){
  if(UCA0STAT & UCBUSY)
 	 return 1;

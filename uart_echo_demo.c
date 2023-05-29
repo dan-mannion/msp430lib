@@ -2,7 +2,7 @@
 
 void main(){
 	stopWatchdogTimer();	
-	uartInit();	
+	uartInit16MHz();	
 	char resp = 'X';
 	uartWriteChar(resp);
 	while(1){
