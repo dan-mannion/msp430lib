@@ -7,3 +7,7 @@ void clocksInit(){
     	DCOCTL = CALDCO_1MHZ;
 
 }
+void clocksInit16MHz(){
+  	BCSCTL1 = CALBC1_16MHZ;                    // Set DCO
+    	DCOCTL = CALDCO_16MHZ;
+}
